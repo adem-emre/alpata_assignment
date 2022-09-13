@@ -30,8 +30,10 @@ class AppRouter extends _i4.RootStackRouter {
           routeData: routeData, child: const _i1.SplashView());
     },
     LoginViewRoute.name: (routeData) {
+      final args = routeData.argsAs<LoginViewRouteArgs>(
+          orElse: () => const LoginViewRouteArgs());
       return _i4.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i2.LoginView());
+          routeData: routeData, child: _i2.LoginView(key: args.key));
     },
     StockMarketHomeViewRoute.name: (routeData) {
       return _i4.MaterialPageX<dynamic>(
@@ -58,10 +60,23 @@ class SplashViewRoute extends _i4.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.LoginView]
-class LoginViewRoute extends _i4.PageRouteInfo<void> {
-  const LoginViewRoute() : super(LoginViewRoute.name, path: '/login-view');
+class LoginViewRoute extends _i4.PageRouteInfo<LoginViewRouteArgs> {
+  LoginViewRoute({_i5.Key? key})
+      : super(LoginViewRoute.name,
+            path: '/login-view', args: LoginViewRouteArgs(key: key));
 
   static const String name = 'LoginViewRoute';
+}
+
+class LoginViewRouteArgs {
+  const LoginViewRouteArgs({this.key});
+
+  final _i5.Key? key;
+
+  @override
+  String toString() {
+    return 'LoginViewRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for

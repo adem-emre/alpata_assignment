@@ -19,7 +19,7 @@ class _SplashViewState extends State<SplashView> {
     if (isUserLoggedIn) {
       context.router.replace(const StockMarketHomeViewRoute());
     } else {
-      context.router.replace(const LoginViewRoute());
+      context.router.replace( LoginViewRoute());
     }
   }
 
