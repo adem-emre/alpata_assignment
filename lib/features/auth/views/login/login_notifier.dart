@@ -1,5 +1,6 @@
 import 'package:alpata_assignment/core/utils/functions.dart';
 import 'package:alpata_assignment/features/auth/service/auth_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoginNotifier extends ChangeNotifier {
@@ -14,7 +15,7 @@ class LoginNotifier extends ChangeNotifier {
     try {
       final success = await _authService.login(userMail, password);
       return success;
-    } catch (e) {
+    } on DioError catch (e) {
       _errorStr = checkAndReturnErrorMessage(e);
       return false;
     }

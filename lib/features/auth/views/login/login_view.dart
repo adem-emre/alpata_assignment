@@ -61,14 +61,16 @@ class LoginView extends StatelessWidget {
                       onFuture: () async {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
+                          final loginNotifier = context.read<LoginNotifier>();
                           bool success =
-                              await context.read<LoginNotifier>().login();
+                              await loginNotifier.login();
+
                           if (success) {
                             context.router
                                 .replace(const StockMarketHomeViewRoute());
                           } else {
                             Fluttertoast.showToast(
-                                msg: context.read<LoginNotifier>().errorStr!);
+                                msg: loginNotifier.errorStr!);
                           }
                         }
                       },

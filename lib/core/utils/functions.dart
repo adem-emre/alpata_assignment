@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 
-import 'dart:io';
-
-String checkAndReturnErrorMessage(Object e){
-  if(e is SocketException ){
+String checkAndReturnErrorMessage(DioError e) {
+  if (e.message.contains("SocketException")) {
     return "Lütfen internet bağlantınızı kontrol edin";
+  } else if (e.response != null &&
+      (e.response!.data as Map<String, dynamic>).containsKey("Message")) {
+    return e.response!.data["Message"];
   }
-  return e.toString();
+  return e.message.toString();
 }
