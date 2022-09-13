@@ -4,7 +4,7 @@ class AuthManager {
   static String? token;
   
 
-  Future<bool> getToken() async {
+  static Future<bool> getToken() async {
     token = await SharedHelper().getToken();
     return token != null;
   }
