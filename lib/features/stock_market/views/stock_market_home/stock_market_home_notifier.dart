@@ -1,8 +1,11 @@
 import 'package:alpata_assignment/core/enum/load_statuas.dart';
+import 'package:alpata_assignment/core/utils/functions.dart';
 import 'package:alpata_assignment/features/stock_market/service/stock_market_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:alpata_assignment/features/stock_market/models/product_select_model.dart' as psm;
 
+import '../../../../helper/shared_helper.dart';
 import '../../models/annual_sale_data_model.dart' as asdm;
 import '../../models/scrolling_text_model.dart' as stm;
 
@@ -11,8 +14,13 @@ class StockMarketHomeNotifier extends ChangeNotifier{
 
   LoadStatus _loadStatus = LoadStatus.idle;
   LoadStatus get loadStatus => _loadStatus;
+  String _errorStr ="";
+  String get errorStr => _errorStr;
+
   LoadStatus _graphicLoadStatus = LoadStatus.idle;
   LoadStatus get graphicLoadStatus => _graphicLoadStatus;
+  String _graphicErrorStr ="";
+  String get graphicErrorStr => _graphicErrorStr;
   int selectedValue = 0;
   List<psm.Data>? selectableProducts;
   List<asdm.Data>? annualSaleDataModels;
@@ -33,13 +41,18 @@ class StockMarketHomeNotifier extends ChangeNotifier{
   }
 
   Future<void> _fetchSelectedProductGraphic(psm.Data selectedProduct)async{
-    _graphicLoadStatus = LoadStatus.loading;
+    try {
+      _graphicLoadStatus = LoadStatus.loading;
     final queryParam = {
       "malKodu":selectedProduct.mAL,
       "yil":2022
     };
     annualSaleDataModels= await _stockMarketService.getAnnualSaleDataGraphic(queryParam);
     _graphicLoadStatus = LoadStatus.loaded;
+    } on DioError catch (e) {
+       _graphicLoadStatus = LoadStatus.error;
+      _graphicErrorStr = checkAndReturnErrorMessage(e);
+    }
     notifyListeners();
   }
 
@@ -52,10 +65,16 @@ class StockMarketHomeNotifier extends ChangeNotifier{
       await _fetchSelectedProductGraphic(selectableProducts![selectedValue]);
     }
     _loadStatus = LoadStatus.loaded;
-    } catch (e) {
-      debugPrint("Hata oluştu : $e");
+    }  on DioError catch(e) {
+      _loadStatus = LoadStatus.error;
+      _errorStr = checkAndReturnErrorMessage(e);
     }
     notifyListeners();
+  }
+
+  Future<bool> logOut(){
+    final shared = SharedHelper();
+    return shared.clearAll();
   }
   
 

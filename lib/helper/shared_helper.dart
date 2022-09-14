@@ -14,5 +14,11 @@ class SharedHelper{
     return result;
   }
 
+  Future<bool> clearAll() async {
+    final shared = await SharedPreferences.getInstance();
+    return await shared.clear();
+
+  }
+
 
 }

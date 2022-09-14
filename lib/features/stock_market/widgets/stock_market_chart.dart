@@ -7,10 +7,14 @@ import '../models/annual_sale_data_model.dart';
 
 class StockMarketChart extends StatelessWidget {
   const StockMarketChart(
-      {Key? key, required this.loadStatus, this.annualSaleDataModels})
+      {Key? key,
+      required this.loadStatus,
+      this.annualSaleDataModels,
+      required this.errorStr})
       : super(key: key);
   final LoadStatus loadStatus;
   final List<Data>? annualSaleDataModels;
+  final String errorStr;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +47,7 @@ class StockMarketChart extends StatelessWidget {
                     .toList())
           ]));
     } else if (loadStatus == LoadStatus.error) {
-      return const Text("Bir Hata oluştu");
+      return Center(child: Text(errorStr));
     } else {
       return const Center(child: CircularProgressIndicator());
     }

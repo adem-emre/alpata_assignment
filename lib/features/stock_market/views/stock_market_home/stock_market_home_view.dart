@@ -3,7 +3,10 @@ import 'package:alpata_assignment/core/extensions/size_extension.dart';
 import 'package:alpata_assignment/features/stock_market/views/stock_market_home/stock_market_home_notifier.dart';
 import 'package:alpata_assignment/features/stock_market/widgets/scrolling_text_card.dart';
 import 'package:alpata_assignment/features/stock_market/widgets/stock_market_chart.dart';
+import 'package:alpata_assignment/router/router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class StockMarketHomeView extends StatelessWidget {
@@ -15,7 +18,22 @@ class StockMarketHomeView extends StatelessWidget {
       create: (context) => StockMarketHomeNotifier()..initializeStockMarket(),
       child: Builder(builder: (context) {
         return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                    onPressed: () async {
+                      bool success = await context
+                          .read<StockMarketHomeNotifier>()
+                          .logOut();
+                      if (success) {
+                        context.router.replaceAll([LoginViewRoute()]);
+                      } else {
+                        Fluttertoast.showToast(msg: "Bir hata oluştu");
+                      }
+                    },
+                    icon: const Icon(Icons.logout))
+              ],
+            ),
             body: Consumer<StockMarketHomeNotifier>(
                 builder: (_, stockMarketNotifier, __) {
               if (stockMarketNotifier.loadStatus == LoadStatus.loaded) {
@@ -51,6 +69,7 @@ class StockMarketHomeView extends StatelessWidget {
                       loadStatus: stockMarketNotifier.graphicLoadStatus,
                       annualSaleDataModels:
                           stockMarketNotifier.annualSaleDataModels!,
+                          errorStr: stockMarketNotifier.graphicErrorStr,
                     ),
                     const SizedBox(height: 15),
                     SizedBox(
@@ -62,12 +81,18 @@ class StockMarketHomeView extends StatelessWidget {
                         itemBuilder: (BuildContext context, int index) {
                           final currentTextModel =
                               stockMarketNotifier.scrollingTextModels?[index];
-                          return ScrollingTextCard(currentTextModel: currentTextModel,);
+                          return ScrollingTextCard(
+                            currentTextModel: currentTextModel,
+                          );
                         },
                       ),
                     )
                   ],
                 );
+              }else if(stockMarketNotifier.loadStatus == LoadStatus.error){
+                return Center(
+                child: Text(stockMarketNotifier.errorStr),
+              );
               }
               return const Center(
                 child: CircularProgressIndicator(),
