@@ -1,6 +1,7 @@
 
+
 import 'package:alpata_assignment/core/network/base_network.dart';
-import 'package:alpata_assignment/features/stock_market/models/annual_sale_data_model.dart';
+import 'package:alpata_assignment/features/stock_market/models/annual_sale_data_model.dart' as asdm;
 import 'package:alpata_assignment/features/stock_market/models/product_select_model.dart' as psm;
 import 'package:alpata_assignment/features/stock_market/models/scrolling_text_model.dart' as stm;
 
@@ -23,11 +24,11 @@ class StockMarketService extends BaseNetwork {
     return response.data;
   }
 
-  getAnnualSaleDataGraphic( Map<String,dynamic> queryParameters)async{
-    final response = await basePost<AnnualSaleDataModel>(
+   Future<List<asdm.Data>?> getAnnualSaleDataGraphic( Map<String,dynamic> queryParameters)async{
+    final response = await basePost<asdm.AnnualSaleDataModel>(
         "Alpha.Borsa.Bulten/Genel/GetSatisVerileriYilGrafik",
         {},
-        AnnualSaleDataModel.fromJson,
+        asdm.AnnualSaleDataModel.fromJson,
         queryParameters:queryParameters
         );
     return response.data;
